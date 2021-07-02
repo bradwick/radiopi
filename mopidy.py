@@ -1,5 +1,6 @@
 import time
 import datetime
+import random
 
 #import pyttsx3
 import requests
@@ -49,11 +50,18 @@ def create_tracklist_and_shuffle():
         # print(song)
         track_uris.append(song['uri'])
 
+    # suffle the list here with python, it allows us to grab the first and start playing sooner
+    random.shuffle(track_uris)
+
+    # its random now so we don't care about the first song to play, we'll pop the last
+    make_call_return_json("core.tracklist.add", {"uris": track_uris.pop()})
+    
+    #play the song we just added
+    set_mopidy_playback('play')
+
+    # add the rest of the songs
     make_call_return_json("core.tracklist.add", {"uris": track_uris})
 
-    # then shuffle baby
-    make_call_return_json("core.tracklist.shuffle")
-    
     #loop it for for forever musics
     make_call_return_json("core.tracklist.set_repeat", ['true'])
 
